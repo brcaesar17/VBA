@@ -1,0 +1,105 @@
+
+Sub assignment()
+Dim tickername As String
+Dim summaryrow As Long
+Dim lastrow As Long
+Dim totalstcok As Long
+Dim change As Long
+Dim i As Integer
+Dim j As Integer
+Dim s As String
+Dim ss As String
+Dim first As Long
+Dim ended As Long
+Dim change_percentage As Double
+Dim xxx As Double
+
+
+Dim greatestIncrease As Double
+Dim greatestDecrease As Double
+Dim totalVolume As Double
+
+
+s = "20200102"
+ss = "20201231"
+summaryrow = 2
+Totalstock = 0
+lastrow = Cells(Rows.Count, 1).End(xlUp).Row
+
+
+
+For i = 2 To lastrow
+    If Cells(i + 1, 1).Value <> Cells(i, 1).Value Then
+        
+        first_row = 2
+        
+        tickername = Cells(i, 1).Value
+        
+        Totalstock = Totalstock + Cells(i, 7).Value
+        Cells(1, 13).Value = ("Total Stock Volume")
+        
+        Range("J" & summaryrow).Value = tickername
+        Cells(1, 10).Value = ("Ticker")
+        Range("M" & summaryrow).Value = Totalstock
+        close_value = Cells(i, 6).Value
+        open_value = Cells(first_row, 3).Value
+        Range("K" & summaryrow).Value = close_value - open_value
+        Cells(1, 11).Value = ("Yearly Change")
+        If Range("K" & summaryrow).Value > 0 Then
+            Range("K" & summaryrow).Interior.ColorIndex = 4
+        
+        ElseIf Range("K" & summaryrow).Value = 0 Then
+            Range("K" & summaryrow).Interior.ColorIndex = 5
+            Range("K" & summaryrow).Font.ColorIndex = 2
+        Else
+            Range("K" & summaryrow).Interior.ColorIndex = 3
+            Range("K" & summaryrow).Font.ColorIndex = 2
+        End If
+        change_percentage = (close_value - open_value) / open_value
+        Range("L" & summaryrow).Value = change_percentage
+        Cells(1, 12).Value = ("Percent Change")
+        summaryrow = summaryrow + 1
+        first_row = i + 1
+        Totalstock = 0
+    Else
+        Totalstock = Totalstock + Cells(i, 7).Value
+    End If
+i = i + 1
+Next i
+
+lastrow2 = Cells(Rows.Count, 11).End(xlUp).Row
+greatestIncrease = 0
+greatestDecrease = 0
+totalVolume = 0
+
+For i = 2 To lastrow2
+
+    If Cells(i, 12).Value > greatestIncrease Then
+        greatestIncrease = Cells(i, 12).Value
+        Cells(2, 17).Value = greatestIncrease
+        Cells(2, 16).Value = Cells(i, 10).Value
+        Cells(2, 16).Value = ("Ticker")
+         Cells(2, 15).Value = ("Greatest Increase %")
+    End If
+ If Cells(i, 12).Value < greatestDecrease Then
+        greatestDecrease = Cells(i, 12).Value
+        Cells(3, 17).Value = greatestDecrease
+        Cells(3, 16).Value = Cells(i, 10).Value
+        Cells(3, 17).Value = ("Value")
+        Cells(3, 15).Value = ("Greatest Decrease %")
+    End If
+    If Cells(i, 13).Value > totalVolume Then
+        totalVolume = Cells(i, 13).Value
+        Cells(4, 17).Value = totalVolume
+        Cells(4, 16).Value = Cells(i, 10).Value
+        Cells(4, 15).Value = ("Greatest Increase in total volume")
+    End If
+    
+    summaryrow = summaryrow + 1
+i = i + 1
+Next i
+End Sub
+
+
+
+

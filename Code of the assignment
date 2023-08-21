@@ -45,7 +45,7 @@ For i = 2 To lastrow ' looping across all the rows in the table
         If ws.Range("K" & summaryrow).Value > 0 Then ' if the value positive assign green color into the cell
             ws.Range("K" & summaryrow).Interior.ColorIndex = 4
         
-        ElseIf ws.Range("K" & summaryrow).Value = 0 Then
+        ElseIf ws.Range("K" & summaryrow).Value = 0 Then ' comparision to assign the conditional color as per the value
             ws.Range("K" & summaryrow).Interior.ColorIndex = 5
             ws.Range("K" & summaryrow).Font.ColorIndex = 2
         Else
@@ -82,14 +82,14 @@ For i = 2 To lastrow2 ' loop counting from the row 2 till the last row of the ne
     End If
  If ws.Cells(i, 12).Value < greatestDecrease Then ' we used greatestdecrease as a variable to store the biggest decrease within the range of change percentage column
         greatestDecrease = ws.Cells(i, 12).Value
-        ws.Cells(3, 17).Value = greatestDecrease
+        ws.Cells(3, 17).Value = greatestDecrease ' assign the greatest decrease into cell (3,17)
         ws.Cells(3, 16).Value = ws.Cells(i, 10).Value
-        ws.Cells(1, 17).Value = ("Value")
+        ws.Cells(1, 17).Value = ("Value") ' this is the title of the value of decreasee
         ws.Cells(3, 15).Value = ("Greatest Decrease %")
     End If
     If ws.Cells(i, 13).Value > totalVolume Then ' we used totalvolume as a variable to store the maximum volume
         totalVolume = ws.Cells(i, 13).Value
-        ws.Cells(4, 17).Value = totalVolume
+        ws.Cells(4, 17).Value = totalVolume ' assign the total increase of the stock volum to the cell (4,17)
         ws.Cells(4, 16).Value = ws.Cells(i, 10).Value
         ws.Cells(4, 15).Value = ("Greatest Increase in total volume") ' assign the title of the greatest increase stock volume to the row 4 and column 15
     End If

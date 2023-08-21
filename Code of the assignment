@@ -1,104 +1,105 @@
-
 Sub assignment()
-Dim tickername As String
-Dim summaryrow As Long
-Dim lastrow As Long
-Dim totalstcok As Long
-Dim change As Long
-Dim i As Integer
-Dim j As Integer
-Dim s As String
-Dim ss As String
-Dim first As Long
-Dim ended As Long
+
+Dim tickername As String ' variable to store name of the ticker and paste it in the required location
+Dim summaryrow As Double ' variable to store the row of the summary table
+Dim lastrow As Double ' variable to store last row in the table
+Dim totalstcok As Double ' variable to store the total volume of stocks
+Dim change As Double
+Dim i As Double ' variable to be used in for loop refers to the repective row in the table
 Dim change_percentage As Double
-Dim xxx As Double
+Dim greatestIncrease As Double ' variable to store the greatest increase in the percenate change between close and open price of share
+Dim greatestDecrease As Double ' variable to store the greatest decrease in the percenate change between close and open price of share
+Dim totalVolume As Double ' variable to store the greatest stock volume value for the related ticker name
 
 
-Dim greatestIncrease As Double
-Dim greatestDecrease As Double
-Dim totalVolume As Double
+' looping for each worksheet within the three in the workbook
+For Each ws In Worksheets
 
 
-s = "20200102"
-ss = "20201231"
-summaryrow = 2
-Totalstock = 0
-lastrow = Cells(Rows.Count, 1).End(xlUp).Row
+summaryrow = 2 ' constant for the row number 2 in the summary table to match the row in the main table
+Totalstock = 0 ' variable to store the accumulative sum of total stock field
 
+lastrow = ws.Cells(Rows.Count, 1).End(xlUp).Row ' to know the last row in all sheets without manually counting
 
+For i = 2 To lastrow ' looping across all the rows in the table
 
-For i = 2 To lastrow
-    If Cells(i + 1, 1).Value <> Cells(i, 1).Value Then
+    If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then ' conditional test to select only the first and last days of the year
         
-        first_row = 2
+        first_row = 2 ' start point of the looping to skip the headers
         
-        tickername = Cells(i, 1).Value
+        tickername = ws.Cells(i, 1).Value ' assign the first column across all rows into the variable tickername in order to use it for the other two tables
         
-        Totalstock = Totalstock + Cells(i, 7).Value
-        Cells(1, 13).Value = ("Total Stock Volume")
+        Totalstock = Totalstock + ws.Cells(i, 7).Value ' this is looping counter to take the stock volume on each row and add it to the next one until getting the sum of all of stock volume for each ticker
+        ws.Cells(1, 13).Value = ("Total Stock Volume") ' assign the stock volume total for each ticker to the column number 13
         
-        Range("J" & summaryrow).Value = tickername
-        Cells(1, 10).Value = ("Ticker")
-        Range("M" & summaryrow).Value = Totalstock
-        close_value = Cells(i, 6).Value
-        open_value = Cells(first_row, 3).Value
-        Range("K" & summaryrow).Value = close_value - open_value
-        Cells(1, 11).Value = ("Yearly Change")
-        If Range("K" & summaryrow).Value > 0 Then
-            Range("K" & summaryrow).Interior.ColorIndex = 4
+        ws.Range("J" & summaryrow).Value = tickername ' assign each unique ticker name to the column J, to match the assignment image / request
         
-        ElseIf Range("K" & summaryrow).Value = 0 Then
-            Range("K" & summaryrow).Interior.ColorIndex = 5
-            Range("K" & summaryrow).Font.ColorIndex = 2
+        ws.Cells(1, 10).Value = ("Ticker") ' this is the header of the ticker new column in the summary table
+        
+        ws.Range("M" & summaryrow).Value = Totalstock ' assign the total stock of every ticker to the column M
+        close_value = ws.Cells(i, 6).Value ' column 6 contains the daily close price of each ticker share
+        open_value = ws.Cells(first_row, 3).Value ' column 3 contains the daily opening price of each ticker share
+        
+        ws.Range("K" & summaryrow).Value = close_value - open_value ' assign the change between the open price and close price of the ticker share to column K
+        ws.Cells(1, 11).Value = ("Yearly Change") ' assign to the column 11 and row 1 the title yearly change
+        If ws.Range("K" & summaryrow).Value > 0 Then ' if the value positive assign green color into the cell
+            ws.Range("K" & summaryrow).Interior.ColorIndex = 4
+        
+        ElseIf ws.Range("K" & summaryrow).Value = 0 Then
+            ws.Range("K" & summaryrow).Interior.ColorIndex = 5
+            ws.Range("K" & summaryrow).Font.ColorIndex = 2
         Else
-            Range("K" & summaryrow).Interior.ColorIndex = 3
-            Range("K" & summaryrow).Font.ColorIndex = 2
+            ws.Range("K" & summaryrow).Interior.ColorIndex = 3 'if the value less than 0 assign red color to the cell
+            ws.Range("K" & summaryrow).Font.ColorIndex = 2
         End If
-        change_percentage = (close_value - open_value) / open_value
-        Range("L" & summaryrow).Value = change_percentage
-        Cells(1, 12).Value = ("Percent Change")
+        
+        change_percentage = (close_value - open_value) / open_value ' the percenatage of change is close price minus the open price divided by the open price
+        ws.Range("L" & summaryrow).Value = change_percentage ' assign the percentage of change to column L
+        ws.Cells(1, 12).Value = ("Percent Change") ' assign to the column 12 and row 1 the title Percentage change
         summaryrow = summaryrow + 1
         first_row = i + 1
         Totalstock = 0
     Else
-        Totalstock = Totalstock + Cells(i, 7).Value
+        Totalstock = Totalstock + ws.Cells(i, 7).Value 'counter i referes to the row number of the culmn number 7 to sum values of each thicker stock volume
     End If
-i = i + 1
+
 Next i
 
-lastrow2 = Cells(Rows.Count, 11).End(xlUp).Row
-greatestIncrease = 0
-greatestDecrease = 0
+lastrow2 = ws.Cells(Rows.Count, 11).End(xlUp).Row ' last row of the new table / summary table
+
+greatestIncrease = 0 ' variable assigned for the greatest increase in the share price between first and end of the respective year
+greatestDecrease = 0 'variable assigned for the greatest increase in the share price between first and end of the respective year
 totalVolume = 0
 
-For i = 2 To lastrow2
+For i = 2 To lastrow2 ' loop counting from the row 2 till the last row of the new summary table
 
-    If Cells(i, 12).Value > greatestIncrease Then
-        greatestIncrease = Cells(i, 12).Value
-        Cells(2, 17).Value = greatestIncrease
-        Cells(2, 16).Value = Cells(i, 10).Value
-        Cells(2, 16).Value = ("Ticker")
-         Cells(2, 15).Value = ("Greatest Increase %")
+    If ws.Cells(i, 12).Value > greatestIncrease Then ' comparision to get the greatest percentage change
+        greatestIncrease = ws.Cells(i, 12).Value ' we used greatestincrease as a variable to store the biggest increase within the range of change percentage column
+        ws.Cells(2, 17).Value = greatestIncrease ' assign the biggest percentage change to the cell (2,17)
+        ws.Cells(2, 16).Value = ws.Cells(i, 10).Value
+        ws.Cells(1, 16).Value = ("Ticker") ' assign the title to the cell(1,16)
+         ws.Cells(2, 15).Value = ("Greatest Increase %")
     End If
- If Cells(i, 12).Value < greatestDecrease Then
-        greatestDecrease = Cells(i, 12).Value
-        Cells(3, 17).Value = greatestDecrease
-        Cells(3, 16).Value = Cells(i, 10).Value
-        Cells(3, 17).Value = ("Value")
-        Cells(3, 15).Value = ("Greatest Decrease %")
+ If ws.Cells(i, 12).Value < greatestDecrease Then ' we used greatestdecrease as a variable to store the biggest decrease within the range of change percentage column
+        greatestDecrease = ws.Cells(i, 12).Value
+        ws.Cells(3, 17).Value = greatestDecrease
+        ws.Cells(3, 16).Value = ws.Cells(i, 10).Value
+        ws.Cells(1, 17).Value = ("Value")
+        ws.Cells(3, 15).Value = ("Greatest Decrease %")
     End If
-    If Cells(i, 13).Value > totalVolume Then
-        totalVolume = Cells(i, 13).Value
-        Cells(4, 17).Value = totalVolume
-        Cells(4, 16).Value = Cells(i, 10).Value
-        Cells(4, 15).Value = ("Greatest Increase in total volume")
+    If ws.Cells(i, 13).Value > totalVolume Then ' we used totalvolume as a variable to store the maximum volume
+        totalVolume = ws.Cells(i, 13).Value
+        ws.Cells(4, 17).Value = totalVolume
+        ws.Cells(4, 16).Value = ws.Cells(i, 10).Value
+        ws.Cells(4, 15).Value = ("Greatest Increase in total volume") ' assign the title of the greatest increase stock volume to the row 4 and column 15
     End If
     
-    summaryrow = summaryrow + 1
-i = i + 1
-Next i
-End Sub
+    summaryrow = summaryrow + 1 ' counter for the new summary table rows
+
+Next i ' i = i +1
+Next ws ' to apply over all sheets
+End Sub ' end of the macro
+
 
 
 
